@@ -1,9 +1,5 @@
 [
-    {
-        "tag": "IPv4_out",
-        "protocol": "freedom",
-        "settings": {}
-    },
+
     {
         "tag": "IPv6_out",
         "protocol": "freedom",
@@ -22,7 +18,47 @@
         }
     },
     {
+        "protocol": "freedom",
+        "settings": {}
+      },
+      {
         "protocol": "blackhole",
-        "tag": "block"
-    }
+        "tag": "blackhole"
+      },
+      {
+        "tag": "localhost-xtls",
+        "protocol": "freedom",
+        "settings": {
+          "redirect": "127.0.0.1:400"
+        }
+      },
+      {
+        "tag": "localhost-tgproxy",
+        "protocol": "freedom",
+        "settings": {
+          "redirect": "127.0.0.1:1001"
+        }
+      },
+      {
+        "tag": "localhost-faketls",
+        "protocol": "freedom",
+        "settings": {
+          "redirect": "127.0.0.1:1002"
+        }
+      },
+      {
+        "tag": "other-sni",
+        "protocol": "freedom",
+        "settings": {
+          "redirect": "127.0.0.1:445"
+        }
+      },
+      {
+        "tag": "DNS-Internal",
+        "protocol": "dns",
+        "settings": {
+          "address": "127.0.0.53",
+          "port": 53
+        }
+      }
 ]

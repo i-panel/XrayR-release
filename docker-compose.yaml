@@ -1,0 +1,212 @@
+version: "3"
+services:
+  traefik:
+    image: traefik
+    restart: always
+    container_name: traefik
+    networks:
+      - traefik
+    ports:
+      - '80:80'
+    command:
+      - --api.insecure=false
+      - --api.dashboard=true
+      - --api.debug=true
+      - --log.level=DEBUG
+      - --log.filePath=/var/log/traefik/traefik.log
+      - --accessLog=/var/log/traefik/access.log
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:80
+      - --entrypoints.web.forwardedHeaders.insecure=true
+      - --entrypoints.web.forwardedHeaders.trustedIPs=127.0.0.1/32
+      - --entrypoints.web.ProxyProtocol.insecure=true
+      - --entrypoints.web.ProxyProtocol.trustedIPs=127.0.0.1/32
+    environment:
+      TZ: Asia/Tehran
+    volumes:
+      - ./traefik/log:/var/log/traefik
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      traefik.enable: true
+      traefik.http.routers.http_catchall.rule: hostregexp(`{host:.*}`)
+      traefik.http.routers.http_catchall.entryPoints: web
+      traefik.http.routers.traefik.rule: Host(`traefik.${DOMAIN}`)
+      traefik.http.routers.traefik.entryPoints: web
+      traefik.http.routers.traefik.service: api@internal
+  XRAYR:
+    image: ghcr.io/xrayr-project/xrayr:latest
+    container_name: XRAYR
+    restart: unless-stopped
+    depends_on:
+      - traefik
+    environment:
+      TZ: Asia/Tehran
+    networks:
+      - traefik
+    volumes:
+      - ./config:/etc/XrayR
+      - ./log:/var/log/XrayR
+    expose:
+      - 3001
+      - 3002
+      - 3003
+      - 3004
+      - 3005
+      - 3006
+      - 3007
+      - 3008
+      - 3009
+      - 3010
+      - 3011
+    labels:
+      traefik.enable: true
+      traefik.http.routers.xray_vlessws.rule: Host(`${DOMAIN}`) && Path(`/vlessws`)
+      traefik.http.routers.xray_vlessws.service: xray_vlessws
+      traefik.http.routers.xray_vlessws.entrypoints: web
+      traefik.http.services.xray_vlessws.loadbalancer.server.port: 3005
+      traefik.http.routers.xray_vmessws.rule: Host(`${DOMAIN}`) && Path(`/vmessws`)
+      traefik.http.routers.xray_vmessws.service: xray_vmessws
+      traefik.http.routers.xray_vmessws.entrypoints: web
+      traefik.http.services.xray_vmessws.loadbalancer.server.port: 3006
+      traefik.http.routers.xray_trojanws.rule: Host(`${DOMAIN}`) && Path(`/trojanws`)
+      traefik.http.routers.xray_trojanws.service: xray_trojanws
+      traefik.http.routers.xray_trojanws.entrypoints: web
+      traefik.http.services.xray_trojanws.loadbalancer.server.port: 3007
+      traefik.http.routers.xray_vltc.rule: Host(`${DOMAIN}`) && Path(`/vltc`)
+      traefik.http.routers.xray_vltc.service: xray_vltc
+      traefik.http.routers.xray_vltc.entrypoints: web
+      traefik.http.services.xray_vltc.loadbalancer.server.port: 3010
+      traefik.http.routers.xray_vmtc.rule: Host(`${DOMAIN}`) && Path(`/vmtc`)
+      traefik.http.routers.xray_vmtc.service: xray_vmtc
+      traefik.http.routers.xray_vmtc.entrypoints: web
+      traefik.http.services.xray_vmtc.loadbalancer.server.port: 3011
+      traefik.http.routers.xray_trtc.rule: Host(`${DOMAIN}`) && Path(`/trtc`)
+      traefik.http.routers.xray_trtc.service: xray_trtc
+      traefik.http.routers.xray_trtc.entrypoints: web
+      traefik.http.services.xray_trtc.loadbalancer.server.port: 3009
+      traefik.http.routers.xray_h2.rule: Host(`${DOMAIN}`) && Path(`/h2`)
+      traefik.http.routers.xray_h2.service: xray_h2
+      traefik.http.routers.xray_h2.entrypoints: web
+      traefik.http.services.xray_h2.loadbalancer.server.port: 3008
+      traefik.http.services.xray_h2.loadbalancer.server.scheme: h2c
+      traefik.http.routers.xray_trgrpc.rule: Host(`${DOMAIN}`) && Path(`/trgrpc`)
+      traefik.http.routers.xray_trgrpc.service: xray_trgrpc
+      traefik.http.routers.xray_trgrpc.entrypoints: web
+      traefik.http.services.xray_trgrpc.loadbalancer.server.port: 3001
+      traefik.http.services.xray_trgrpc.loadbalancer.server.scheme: h2c
+      traefik.http.routers.xray_vlgrpc.rule: Host(`${DOMAIN}`) && Path(`/vlgrpc`)
+      traefik.http.routers.xray_vlgrpc.service: xray_vlgrpc
+      traefik.http.routers.xray_vlgrpc.entrypoints: web
+      traefik.http.services.xray_vlgrpc.loadbalancer.server.port: 3002
+      traefik.http.services.xray_vlgrpc.loadbalancer.server.scheme: h2c
+      traefik.http.routers.xray_vmgrpc.rule: Host(`${DOMAIN}`) && Path(`/vmgrpc`)
+      traefik.http.routers.xray_vmgrpc.service: xray_vmgrpc
+      traefik.http.routers.xray_vmgrpc.entrypoints: web
+      traefik.http.services.xray_vmgrpc.loadbalancer.server.port: 3003
+      traefik.http.services.xray_vmgrpc.loadbalancer.server.scheme: h2c
+      traefik.http.routers.xray_ssgrpc.rule: Host(`${DOMAIN}`) && Path(`/ssgrpc`)
+      traefik.http.routers.xray_ssgrpc.service: xray_ssgrpc
+      traefik.http.routers.xray_ssgrpc.entrypoints: web
+      traefik.http.services.xray_ssgrpc.loadbalancer.server.port: 3004
+      traefik.http.services.xray_ssgrpc.loadbalancer.server.scheme: h2c
+  nginx:
+    container_name: nginx
+    image: nginx:latest
+    restart: unless-stopped
+    environment:
+      - DOMAIN
+      - TZ: Asia/Tehran
+    networks:
+      - traefik
+    depends_on:
+      - XRAYR
+    ports:
+      - 443:443
+    volumes:
+      - ./etc/nginx/templates:/etc/nginx/templates:ro
+      - ./etc/letsencrypt:/etc/letsencrypt:ro
+      - ./certbot/data:/var/www/certbot
+  certbot:
+    container_name: certbot
+    image: certbot/certbot:latest
+    depends_on:
+      - nginx
+    environment:
+      - DOMAIN
+      - TZ: Asia/Tehran
+    command: >-
+             certonly --reinstall --webroot --webroot-path=/var/www/certbot
+             --email ${EMAIL} --agree-tos --no-eff-email
+             -d ${DOMAIN}
+    volumes:
+      - ./etc/letsencrypt:/etc/letsencrypt
+      - ./certbot/data:/var/www/certbot
+  sspanel:
+    image: ttracy/panel
+    container_name: sspanel
+    restart: always
+    labels:
+      traefik.enable: true
+      traefik.http.routers.sspanel.rule: Host(`${DOMAIN}`) && Path(`/`)
+      traefik.http.routers.sspanel.service: sspanel
+      traefik.http.routers.sspanel.entrypoints: web
+      traefik.http.services.sspanel.loadbalancer.server.port: 8080
+    volumes:
+      - ./config/.config.php:/var/www/config/.config.php
+    depends_on:
+      - traefik
+      - mariadb:
+        condition: service_healthy
+    environment:
+      SSPANEL_KEY: ChangeMe
+      SSPANEL_APP_NAME: SSPanel-UIM
+      SSPANEL_BASEURL: https://${DOMAIN}
+      SSPANEL_MUKEY: SSPANEL
+      SSPANEL_ADMIN_EMAIL: admin@${DOMAIN}.com
+      SSPANEL_ADMIN_PASSWORD: V3ryL0ngP@ssw0rd
+      DEBUG: "false"
+      TIME_ZONE: Asia/Tehran
+      STREAMING_UNLOCK: "false"
+      GITHUB_ACCESS_TOKEN:
+      ENABLE_TELEGRAM: "false"
+      TELEGRAM_TOKEN:
+      TELEGRAM_CHAT_ID:
+      TELEGRAM_BOT: EXAMPLE_bot
+      TELEGRAM_LOGIN: "false"
+      B2_BACKUP_NAME: SSPANEL
+      B2_BACKUP: "false"
+      B2_APP_KEY_ID:
+      B2_APP_KEY:
+      B2_BUCKET_NAME:
+      B2_COMPRESS_METHOD: zip
+      DB_HOST: ss_db
+      DB_PORT: 3306
+      DB_DATABASE: sspanel
+      DB_PASSWORD: sspanel
+      DB_USERNAME: root
+      ports:
+        - 8080:80
+  mariadb:
+    image: mariadb:10.9
+    container_name: ss_db
+    restart: always
+    command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+    environment:
+      MYSQL_ROOT_PASSWORD: sspanel
+      MYSQL_DATABASE: sspanel
+      healthcheck:
+        test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+        timeout: 20s
+        retries: 10
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: phpmyadmin
+    restart: always
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      ports:
+        - 8081:80
+      environment:
+        - PMA_ARBITRARY=1
