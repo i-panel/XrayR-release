@@ -18,7 +18,7 @@ services:
     expose:
       - 80
     command:
-      - --api.insecure=false
+      - --api.insecure=true
       - --api.dashboard=true
       - --api.debug=true
       - --log.level=DEBUG
@@ -28,9 +28,9 @@ services:
       - --providers.docker.exposedbydefault=false
       - --entrypoints.web.address=:80
       - --entrypoints.web.forwardedHeaders.insecure=true
-      - --entrypoints.web.forwardedHeaders.trustedIPs=127.0.0.1/32
+      # - --entrypoints.web.forwardedHeaders.trustedIPs=127.0.0.1/32
       - --entrypoints.web.ProxyProtocol.insecure=true
-      - --entrypoints.web.ProxyProtocol.trustedIPs=127.0.0.1/32
+      # - --entrypoints.web.ProxyProtocol.trustedIPs=127.0.0.1/32
     environment:
       TZ: Asia/Tehran
     volumes:
@@ -38,7 +38,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     labels:
       traefik.enable: true
-      traefik.http.routers.http_catchall.rule: hostregexp(`{host:.*}`)
+      # traefik.http.routers.http_catchall.rule: hostregexp(`{host:.*}`)
       traefik.http.routers.http_catchall.entryPoints: web
       traefik.http.routers.traefik.rule: Host(`${DOMAIN}`) && Path(`/traefik`)
       traefik.http.routers.traefik.entryPoints: web
@@ -174,7 +174,7 @@ services:
       - 8080:80
     labels:
       traefik.enable: true
-      traefik.http.routers.sspanel.rule: Host(`${DOMAIN}`) && Path(`/`)
+      traefik.http.routers.sspanel.rule: Host(`${DOMAIN}`)
       traefik.http.routers.sspanel.service: sspanel
       traefik.http.routers.sspanel.entrypoints: web
       traefik.http.services.sspanel.loadbalancer.server.port: 8080
