@@ -3,7 +3,7 @@ version: "2.1"
 networks:
   traefik:
     driver: bridge
-    
+
 services:
   traefik:
     image: traefik
@@ -134,6 +134,8 @@ services:
   certbot:
     container_name: certbot
     image: certbot/certbot:latest
+    networks:
+      - traefik
     depends_on:
       - nginx
     environment:
@@ -148,6 +150,8 @@ services:
   SSPANEL:
     image: ttracy/panel
     container_name: SSPANEL
+    networks:
+      - traefik
     restart: always
     ports:
       - 8080:80
@@ -192,6 +196,8 @@ services:
   mariadb:
     image: mariadb:10.9
     container_name: ss_db
+    networks:
+      - traefik
     restart: always
     command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
     environment:
@@ -205,6 +211,8 @@ services:
     image: phpmyadmin
     container_name: phpmyadmin
     restart: always
+    networks:
+      - traefik
     depends_on:
       mariadb:
         condition: service_healthy
