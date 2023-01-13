@@ -184,7 +184,7 @@ services:
       DB_PASSWORD: sspanel
       DB_USERNAME: root
       ports:
-        - 8080:80
+        - "8080:80"
   mariadb:
     image: mariadb:10.9
     container_name: ss_db
@@ -193,10 +193,10 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: sspanel
       MYSQL_DATABASE: sspanel
-      healthcheck:
-        test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
-        timeout: 20s
-        retries: 10
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
   phpmyadmin:
     image: phpmyadmin
     container_name: phpmyadmin
@@ -205,6 +205,6 @@ services:
       mariadb:
         condition: service_healthy
       ports:
-        - 8081:80
+        - "8081:80"
       environment:
         - PMA_ARBITRARY=1
