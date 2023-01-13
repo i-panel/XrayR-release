@@ -9,7 +9,7 @@ CDN=$3
 
 echo DOMAIN=${DOMAIN} >> .env
 echo EMAIL=${EMAIL} >> .env
-echo CDN=${CDN} >> .env
+echo CDN=${CDN}_real_ip.conf >> .env
  
 # Phase 1
 docker-compose -f ./docker-compose-initiate.yaml up -d nginx
