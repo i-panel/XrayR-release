@@ -144,6 +144,8 @@ services:
     image: ttracy/panel
     container_name: SSPANEL
     restart: always
+    ports:
+      - 8080:80
     labels:
       traefik.enable: true
       traefik.http.routers.sspanel.rule: Host(`${DOMAIN}`) && Path(`/`)
@@ -153,9 +155,8 @@ services:
     volumes:
       - ./config/.config.php:/var/www/config/.config.php
     depends_on:
-      - traefik
-      - mariadb:
-          condition: service_healthy
+      mariadb:
+        condition: service_healthy
     environment:
       SSPANEL_KEY: ChangeMe
       SSPANEL_APP_NAME: SSPanel-UIM
@@ -183,8 +184,6 @@ services:
       DB_DATABASE: sspanel
       DB_PASSWORD: sspanel
       DB_USERNAME: root
-      ports:
-        - "8080:80"
   mariadb:
     image: mariadb:10.9
     container_name: ss_db
@@ -204,7 +203,7 @@ services:
     depends_on:
       mariadb:
         condition: service_healthy
-      ports:
-        - "8081:80"
-      environment:
-        - PMA_ARBITRARY=1
+    ports:
+      - 8081:80
+    environment:
+      - PMA_ARBITRARY=1
