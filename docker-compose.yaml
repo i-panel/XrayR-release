@@ -1,4 +1,9 @@
 version: "2.1"
+
+networks:
+  traefik:
+    driver: bridge
+    
 services:
   traefik:
     image: traefik
