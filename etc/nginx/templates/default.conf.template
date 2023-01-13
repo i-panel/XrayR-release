@@ -1,6 +1,6 @@
-upstream XRAY {
+upstream XRAYR {
     # server unix:/dev/shm/xray_ws.sock;
-    server TRAEFIK:80;
+    server TRAEFIK;
     keepalive 500;
     keepalive_timeout 7d;
     keepalive_requests 100000;
