@@ -142,9 +142,9 @@ services:
     volumes:
       - ./etc/letsencrypt:/etc/letsencrypt
       - ./certbot/data:/var/www/certbot
-  sspanel:
+  SSPANEL:
     image: ttracy/panel
-    container_name: sspanel
+    container_name: SSPANEL
     restart: always
     labels:
       traefik.enable: true
