@@ -155,7 +155,7 @@ services:
     depends_on:
       - traefik
       - mariadb:
-        condition: service_healthy
+          condition: service_healthy
     environment:
       SSPANEL_KEY: ChangeMe
       SSPANEL_APP_NAME: SSPanel-UIM
