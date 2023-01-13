@@ -1,10 +1,4 @@
-upstream XRAY {
-    # server unix:/dev/shm/xray_ws.sock;
-    server XRAYR:80;
-    keepalive 500;
-    keepalive_timeout 7d;
-    keepalive_requests 100000;
-}
+
 server {
         # SSL configuration
         #
