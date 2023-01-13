@@ -46,7 +46,7 @@ services:
     container_name: XRAYR
     restart: unless-stopped
     depends_on:
-      - traefik
+      - TRAEFIK
     environment:
       TZ: Asia/Tehran
     networks:
