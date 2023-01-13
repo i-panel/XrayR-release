@@ -1,4 +1,4 @@
-version: "3"
+version: "2.1"
 services:
   traefik:
     image: traefik
@@ -116,7 +116,6 @@ services:
     restart: unless-stopped
     environment:
       - DOMAIN
-      - TZ: Asia/Tehran
     networks:
       - traefik
     depends_on:
@@ -134,7 +133,6 @@ services:
       - nginx
     environment:
       - DOMAIN
-      - TZ: Asia/Tehran
     command: >-
              certonly --reinstall --webroot --webroot-path=/var/www/certbot
              --email ${EMAIL} --agree-tos --no-eff-email
