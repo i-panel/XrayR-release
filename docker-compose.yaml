@@ -5,12 +5,14 @@ networks:
     driver: bridge
 
 services:
-  traefik:
+  TRAEFIK:
     image: traefik
     restart: always
-    container_name: traefik
+    container_name: TRAEFIK
     networks:
-      - traefik
+        traefik:
+            aliases:
+                - TRAEFIK
     ports:
       - '80:80'
     command:
@@ -127,6 +129,7 @@ services:
     links:
        - XRAYR:XRAYR
        - SSPANEL:SSPANEL
+       - TRAEFIK:TRAEFIK
     networks:
         traefik:
             aliases:
