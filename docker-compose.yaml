@@ -20,7 +20,7 @@ services:
       - --entrypoints.web.forwardedHeaders.trustedIPs=127.0.0.1/32
       #- --entrypoints.web.ProxyProtocol.insecure=true
       - --entrypoints.web.ProxyProtocol.trustedIPs=127.0.0.1/32
-    labels:
+    # labels:
       # - "traefik.http.routers.dashboard.rule=Host(`traefik.${DOMAIN}`)"
       # - "traefik.http.services.dashboard.loadbalancer.server.port=8080"
     ports:
