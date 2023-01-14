@@ -2,7 +2,7 @@ version: "2.1"
 
 services:
 
-  traefik:
+  TRAEFIK:
     image: "traefik:v2.9"
     container_name: "TRAEFIK"
     command:
@@ -21,8 +21,8 @@ services:
       #- --entrypoints.web.ProxyProtocol.insecure=true
       - --entrypoints.web.ProxyProtocol.trustedIPs=127.0.0.1/32
     labels:
-      - "traefik.http.routers.dashboard.rule=Host(`traefik.${DOMAIN}`)"
-      - "traefik.http.services.dashboard.loadbalancer.server.port=8080"
+      # - "traefik.http.routers.dashboard.rule=Host(`traefik.${DOMAIN}`)"
+      # - "traefik.http.services.dashboard.loadbalancer.server.port=8080"
     ports:
       - "80:80"
       - "8080:8080"
