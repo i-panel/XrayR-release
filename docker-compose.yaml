@@ -1,126 +1,53 @@
 version: "2.1"
 
-networks:
-  traefik:
-    external: true
-
 services:
-  TRAEFIK:
-    image: traefik
-    restart: always
-    container_name: TRAEFIK
-    networks:
-        traefik:
-            aliases:
-                - TRAEFIK
-    ports:
-      - '80:80'
-    expose:
-      - 80
+
+  traefik:
+    image: "traefik:v2.9"
+    container_name: "TRAEFIK"
     command:
-      - --api.insecure=true
-      - --api.dashboard=true
-      - --api.debug=true
-      - --log.level=DEBUG
-      - --log.filePath=/var/log/traefik/traefik.log
-      - --accessLog=/var/log/traefik/access.log
-      - --providers.docker=true
-      - --providers.docker.exposedbydefault=false
-      - --entrypoints.web.address=:80
-      - --entrypoints.web.forwardedHeaders.insecure=true
-      # - --entrypoints.web.forwardedHeaders.trustedIPs=127.0.0.1/32
-      - --entrypoints.web.ProxyProtocol.insecure=true
-      # - --entrypoints.web.ProxyProtocol.trustedIPs=127.0.0.1/32
-    environment:
-      TZ: Asia/Tehran
-    volumes:
-      - ./traefik/log:/var/log/traefik
-      - /var/run/docker.sock:/var/run/docker.sock
+      #- "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--api.dashboard=true"
+      - "--api.debug=true"
+      - "--log.level=DEBUG"
+      - "--log.filePath=/var/log/traefik/traefik.log"
+      - "--accessLog=/var/log/traefik/access.log"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      # - --entrypoints.web.forwardedHeaders.insecure=true
+      - --entrypoints.web.forwardedHeaders.trustedIPs=127.0.0.1/32
+      #- --entrypoints.web.ProxyProtocol.insecure=true
+      - --entrypoints.web.ProxyProtocol.trustedIPs=127.0.0.1/32
     labels:
-      traefik.enable: true
-      # traefik.http.routers.http_catchall.rule: hostregexp(`{host:.*}`)
-      traefik.http.routers.http_catchall.entryPoints: web
-      traefik.http.routers.traefik.rule: Host(`${DOMAIN}`) && Path(`/traefik`)
-      traefik.http.routers.traefik.entryPoints: web
-      traefik.http.routers.traefik.service: api@internal
-  XRAYR:
-    image: ghcr.io/xrayr-project/xrayr:latest
-    container_name: XRAYR
-    restart: unless-stopped
-    depends_on:
-      - TRAEFIK
+      - "traefik.http.routers.dashboard.rule=Host(`traefik.${DOMAIN}`)"
+      - "traefik.http.services.dashboard.loadbalancer.server.port=8080"
+    ports:
+      - "80:80"
+      - "8080:8080"
     environment:
-      TZ: Asia/Tehran
-    networks:
-        traefik:
-            aliases:
-                - XRAYR
+      - DOMAIN
     volumes:
-      - ./config:/etc/XrayR
-      - ./log:/var/log/XrayR
-    expose:
-      - 3001
-      - 3002
-      - 3003
-      - 3004
-      - 3005
-      - 3006
-      - 3007
-      - 3008
-      - 3009
-      - 3010
-      - 3011
-    labels:
-      traefik.enable: true
-      traefik.http.routers.xray_vlessws.rule: Host(`${DOMAIN}`) && Path(`/vlessws`)
-      traefik.http.routers.xray_vlessws.service: xray_vlessws
-      traefik.http.routers.xray_vlessws.entrypoints: web
-      traefik.http.services.xray_vlessws.loadbalancer.server.port: 3005
-      traefik.http.routers.xray_vmessws.rule: Host(`${DOMAIN}`) && Path(`/vmessws`)
-      traefik.http.routers.xray_vmessws.service: xray_vmessws
-      traefik.http.routers.xray_vmessws.entrypoints: web
-      traefik.http.services.xray_vmessws.loadbalancer.server.port: 3006
-      traefik.http.routers.xray_trojanws.rule: Host(`${DOMAIN}`) && Path(`/trojanws`)
-      traefik.http.routers.xray_trojanws.service: xray_trojanws
-      traefik.http.routers.xray_trojanws.entrypoints: web
-      traefik.http.services.xray_trojanws.loadbalancer.server.port: 3007
-      traefik.http.routers.xray_vltc.rule: Host(`${DOMAIN}`) && Path(`/vltc`)
-      traefik.http.routers.xray_vltc.service: xray_vltc
-      traefik.http.routers.xray_vltc.entrypoints: web
-      traefik.http.services.xray_vltc.loadbalancer.server.port: 3010
-      traefik.http.routers.xray_vmtc.rule: Host(`${DOMAIN}`) && Path(`/vmtc`)
-      traefik.http.routers.xray_vmtc.service: xray_vmtc
-      traefik.http.routers.xray_vmtc.entrypoints: web
-      traefik.http.services.xray_vmtc.loadbalancer.server.port: 3011
-      traefik.http.routers.xray_trtc.rule: Host(`${DOMAIN}`) && Path(`/trtc`)
-      traefik.http.routers.xray_trtc.service: xray_trtc
-      traefik.http.routers.xray_trtc.entrypoints: web
-      traefik.http.services.xray_trtc.loadbalancer.server.port: 3009
-      traefik.http.routers.xray_h2.rule: Host(`${DOMAIN}`) && Path(`/h2`)
-      traefik.http.routers.xray_h2.service: xray_h2
-      traefik.http.routers.xray_h2.entrypoints: web
-      traefik.http.services.xray_h2.loadbalancer.server.port: 3008
-      traefik.http.services.xray_h2.loadbalancer.server.scheme: h2c
-      traefik.http.routers.xray_trgrpc.rule: Host(`${DOMAIN}`) && Path(`/trgrpc`)
-      traefik.http.routers.xray_trgrpc.service: xray_trgrpc
-      traefik.http.routers.xray_trgrpc.entrypoints: web
-      traefik.http.services.xray_trgrpc.loadbalancer.server.port: 3001
-      traefik.http.services.xray_trgrpc.loadbalancer.server.scheme: h2c
-      traefik.http.routers.xray_vlgrpc.rule: Host(`${DOMAIN}`) && Path(`/vlgrpc`)
-      traefik.http.routers.xray_vlgrpc.service: xray_vlgrpc
-      traefik.http.routers.xray_vlgrpc.entrypoints: web
-      traefik.http.services.xray_vlgrpc.loadbalancer.server.port: 3002
-      traefik.http.services.xray_vlgrpc.loadbalancer.server.scheme: h2c
-      traefik.http.routers.xray_vmgrpc.rule: Host(`${DOMAIN}`) && Path(`/vmgrpc`)
-      traefik.http.routers.xray_vmgrpc.service: xray_vmgrpc
-      traefik.http.routers.xray_vmgrpc.entrypoints: web
-      traefik.http.services.xray_vmgrpc.loadbalancer.server.port: 3003
-      traefik.http.services.xray_vmgrpc.loadbalancer.server.scheme: h2c
-      traefik.http.routers.xray_ssgrpc.rule: Host(`${DOMAIN}`) && Path(`/ssgrpc`)
-      traefik.http.routers.xray_ssgrpc.service: xray_ssgrpc
-      traefik.http.routers.xray_ssgrpc.entrypoints: web
-      traefik.http.services.xray_ssgrpc.loadbalancer.server.port: 3004
-      traefik.http.services.xray_ssgrpc.loadbalancer.server.scheme: h2c
+      - ./logs/traefik:/var/log/traefik
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+  # whoami:
+  #   image: "traefik/whoami"
+  #   container_name: "simple-service"
+  #   labels:
+  #     - "traefik.enable=true"
+  #     - "traefik.http.routers.whoami.rule=Host(`whoami.${DOMAIN}`)"
+  #     - "traefik.http.routers.whoami.entrypoints=web"
+      
+  # whoami2:
+  #   image: "traefik/whoami"
+  #   container_name: "simple-service2"
+  #   labels:
+  #     - "traefik.enable=true"
+  #     - "traefik.http.routers.whoami2.rule=Host(`whoami.${DOMAIN}`) && PathPrefix(`/h2`)"
+  #     - "traefik.http.routers.whoami2.entrypoints=web"
+  
   nginx:
     container_name: nginx
     image: nginx:latest
@@ -129,17 +56,13 @@ services:
       - DOMAIN
       - CDN
     links:
-       - XRAYR:XRAYR
+      #  - XRAYR:XRAYR
        - SSPANEL:SSPANEL
        - TRAEFIK:TRAEFIK
-    networks:
-        traefik:
-            aliases:
-                - nginx
-    depends_on:
-      - XRAYR
-    ports:
-      - 443:443
+    # depends_on:
+    #   - XRAYR
+    expose:
+      - 443
     volumes:
       - ./logs/nginx:/var/log/nginx
       - ./etc/nginx/templates/nginx.conf:/etc/nginx/nginx.conf
@@ -149,8 +72,6 @@ services:
   certbot:
     container_name: certbot
     image: certbot/certbot:latest
-    networks:
-      - traefik
     depends_on:
       - nginx
     environment:
@@ -165,19 +86,13 @@ services:
   SSPANEL:
     image: ttracy/panel
     container_name: SSPANEL
-    networks:
-        traefik:
-            aliases:
-                - SSPANEL
     restart: always
-    ports:
-      - 8080:80
     labels:
       traefik.enable: true
       traefik.http.routers.sspanel.rule: Host(`${DOMAIN}`)
       traefik.http.routers.sspanel.service: sspanel
       traefik.http.routers.sspanel.entrypoints: web
-      traefik.http.services.sspanel.loadbalancer.server.port: 8080
+      # traefik.http.services.sspanel.loadbalancer.server.port: 8080
     volumes:
       - ./config/.config.php:/var/www/config/.config.php
     depends_on:
@@ -213,8 +128,6 @@ services:
   mariadb:
     image: mariadb:10.9
     container_name: ss_db
-    networks:
-      - traefik
     restart: always
     command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
     environment:
@@ -228,12 +141,8 @@ services:
     image: phpmyadmin
     container_name: phpmyadmin
     restart: always
-    networks:
-      - traefik
     depends_on:
       mariadb:
         condition: service_healthy
-    ports:
-      - 8081:80
     environment:
       - PMA_ARBITRARY=1
