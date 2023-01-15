@@ -61,6 +61,8 @@ services:
        - TRAEFIK:TRAEFIK
     # depends_on:
     #   - XRAYR
+    ports:
+      - 443:443
     expose:
       - 443
     volumes:
@@ -87,10 +89,11 @@ services:
     image: ttracy/panel
     container_name: SSPANEL
     restart: always
+    expose: 
+      - 80
     labels:
       traefik.enable: true
       traefik.http.routers.sspanel.rule: Host(`${DOMAIN}`)
-      traefik.http.routers.sspanel.service: sspanel
       traefik.http.routers.sspanel.entrypoints: web
       # traefik.http.services.sspanel.loadbalancer.server.port: 8080
     volumes:
@@ -146,3 +149,228 @@ services:
         condition: service_healthy
     environment:
       - PMA_ARBITRARY=1
+
+  xray_vlessws:
+    image: ghcr.io/xrayr-project/xrayr:latest
+    container_name: xray_vlessws
+    restart: unless-stopped
+    depends_on:
+      - TRAEFIK
+    environment:
+      TZ: Asia/Tehran
+    volumes:
+      - ./config:/etc/XrayR
+      - ./log:/var/log/XrayR
+    expose:
+      - 3005
+    labels:
+      traefik.enable: true
+      traefik.http.routers.xray_vlessws.rule: Host(`${DOMAIN}`) && Path(`/vlessws`)
+      traefik.http.routers.xray_vlessws.service: xray_vlessws
+      traefik.http.routers.xray_vlessws.entrypoints: web
+      traefik.http.services.xray_vlessws.loadbalancer.server.port: 3005
+      
+  xray_vmessws:
+    image: ghcr.io/xrayr-project/xrayr:latest
+    container_name: xray_vlessws
+    restart: unless-stopped
+    depends_on:
+      - TRAEFIK
+    environment:
+      TZ: Asia/Tehran
+    volumes:
+      - ./config:/etc/XrayR
+      - ./log:/var/log/XrayR
+    expose:
+      - 3006
+    labels:
+      traefik.enable: true
+      traefik.http.routers.xray_vmessws.rule: Host(`${DOMAIN}`) && Path(`/vmessws`)
+      traefik.http.routers.xray_vmessws.service: xray_vmessws
+      traefik.http.routers.xray_vmessws.entrypoints: web
+      traefik.http.services.xray_vmessws.loadbalancer.server.port: 3006
+
+  xray_trojanws:
+    image: ghcr.io/xrayr-project/xrayr:latest
+    container_name: xray_trojanws
+    restart: unless-stopped
+    depends_on:
+      - TRAEFIK
+    environment:
+      TZ: Asia/Tehran
+    volumes:
+      - ./config:/etc/XrayR
+      - ./log:/var/log/XrayR
+    expose:
+      - 3007
+    labels:
+      traefik.enable: true
+      traefik.http.routers.xray_trojanws.rule: Host(`${DOMAIN}`) && Path(`/trojanws`)
+      traefik.http.routers.xray_trojanws.service: xray_trojanws
+      traefik.http.routers.xray_trojanws.entrypoints: web
+      traefik.http.services.xray_trojanws.loadbalancer.server.port: 3007
+
+  xray_vltc:
+    image: ghcr.io/xrayr-project/xrayr:latest
+    container_name: xray_vltc
+    restart: unless-stopped
+    depends_on:
+      - TRAEFIK
+    environment:
+      TZ: Asia/Tehran
+    volumes:
+      - ./config:/etc/XrayR
+      - ./log:/var/log/XrayR
+    expose:
+      - 3010
+    labels:
+      traefik.enable: true
+      traefik.http.routers.xray_vltc.rule: Host(`${DOMAIN}`) && Path(`/vltc`)
+      traefik.http.routers.xray_vltc.service: xray_vltc
+      traefik.http.routers.xray_vltc.entrypoints: web
+      traefik.http.services.xray_vltc.loadbalancer.server.port: 3010
+
+  xray_vmtc:
+    image: ghcr.io/xrayr-project/xrayr:latest
+    container_name: xray_vmtc
+    restart: unless-stopped
+    depends_on:
+      - TRAEFIK
+    environment:
+      TZ: Asia/Tehran
+    volumes:
+      - ./config:/etc/XrayR
+      - ./log:/var/log/XrayR
+    expose:
+      - 3011
+    labels:
+      traefik.enable: true
+      traefik.http.routers.xray_vmtc.rule: Host(`${DOMAIN}`) && Path(`/vmtc`)
+      traefik.http.routers.xray_vmtc.service: xray_vmtc
+      traefik.http.routers.xray_vmtc.entrypoints: web
+      traefik.http.services.xray_vmtc.loadbalancer.server.port: 3011
+
+  xray_trtc:
+    image: ghcr.io/xrayr-project/xrayr:latest
+    container_name: xray_trtc
+    restart: unless-stopped
+    depends_on:
+      - TRAEFIK
+    environment:
+      TZ: Asia/Tehran
+    volumes:
+      - ./config:/etc/XrayR
+      - ./log:/var/log/XrayR
+    expose:
+      - 3009
+    labels:
+      traefik.enable: true
+      traefik.http.routers.xray_trtc.rule: Host(`${DOMAIN}`) && Path(`/trtc`)
+      traefik.http.routers.xray_trtc.service: xray_trtc
+      traefik.http.routers.xray_trtc.entrypoints: web
+      traefik.http.services.xray_trtc.loadbalancer.server.port: 3009
+
+
+  xray_h2:
+    image: ghcr.io/xrayr-project/xrayr:latest
+    container_name: xray_h2
+    restart: unless-stopped
+    depends_on:
+      - TRAEFIK
+    environment:
+      TZ: Asia/Tehran
+    volumes:
+      - ./config:/etc/XrayR
+      - ./log:/var/log/XrayR
+    expose:
+      - 3008
+    labels:
+      traefik.enable: true
+      traefik.http.routers.xray_h2.rule: Host(`${DOMAIN}`) && Path(`/h2`)
+      traefik.http.routers.xray_h2.service: xray_h2
+      traefik.http.routers.xray_h2.entrypoints: web
+      traefik.http.services.xray_h2.loadbalancer.server.port: 3008
+
+  xray_trgrpc:
+    image: ghcr.io/xrayr-project/xrayr:latest
+    container_name: xray_trgrpc
+    restart: unless-stopped
+    depends_on:
+      - TRAEFIK
+    environment:
+      TZ: Asia/Tehran
+    volumes:
+      - ./config:/etc/XrayR
+      - ./log:/var/log/XrayR
+    expose:
+      - 3001
+    labels:
+      traefik.enable: true
+      traefik.http.routers.xray_trgrpc.rule: Host(`${DOMAIN}`) && Path(`/trgrpc`)
+      traefik.http.routers.xray_trgrpc.service: xray_trgrpc
+      traefik.http.routers.xray_trgrpc.entrypoints: web
+      traefik.http.services.xray_trgrpc.loadbalancer.server.port: 3001
+      traefik.http.services.xray_trgrpc.loadbalancer.server.scheme: h2c
+
+  xray_vlgrpc:
+    image: ghcr.io/xrayr-project/xrayr:latest
+    container_name: xray_vlgrpc
+    restart: unless-stopped
+    depends_on:
+      - TRAEFIK
+    environment:
+      TZ: Asia/Tehran
+    volumes:
+      - ./config:/etc/XrayR
+      - ./log:/var/log/XrayR
+    expose:
+      - 3002
+    labels:
+      traefik.enable: true
+      traefik.http.routers.xray_vlgrpc.rule: Host(`${DOMAIN}`) && Path(`/vlgrpc`)
+      traefik.http.routers.xray_vlgrpc.service: xray_vlgrpc
+      traefik.http.routers.xray_vlgrpc.entrypoints: web
+      traefik.http.services.xray_vlgrpc.loadbalancer.server.port: 3002
+      traefik.http.services.xray_vlgrpc.loadbalancer.server.scheme: h2c
+
+  xray_vmgrpc:
+    image: ghcr.io/xrayr-project/xrayr:latest
+    container_name: xray_vmgrpc
+    restart: unless-stopped
+    depends_on:
+      - TRAEFIK
+    environment:
+      TZ: Asia/Tehran
+    volumes:
+      - ./config:/etc/XrayR
+      - ./log:/var/log/XrayR
+    expose:
+      - 3002
+    labels:
+      traefik.enable: true
+      traefik.http.routers.xray_vmgrpc.rule: Host(`${DOMAIN}`) && Path(`/vmgrpc`)
+      traefik.http.routers.xray_vmgrpc.service: xray_vmgrpc
+      traefik.http.routers.xray_vmgrpc.entrypoints: web
+      traefik.http.services.xray_vmgrpc.loadbalancer.server.port: 3003
+      traefik.http.services.xray_vmgrpc.loadbalancer.server.scheme: h2c
+
+  xray_ssgrpc:
+    image: ghcr.io/xrayr-project/xrayr:latest
+    container_name: xray_ssgrpc
+    restart: unless-stopped
+    depends_on:
+      - TRAEFIK
+    environment:
+      TZ: Asia/Tehran
+    volumes:
+      - ./config:/etc/XrayR
+      - ./log:/var/log/XrayR
+    expose:
+      - 3002
+    labels:
+      traefik.enable: true
+      traefik.http.routers.xray_ssgrpc.rule: Host(`${DOMAIN}`) && Path(`/ssgrpc`)
+      traefik.http.routers.xray_ssgrpc.service: xray_ssgrpc
+      traefik.http.routers.xray_ssgrpc.entrypoints: web
+      traefik.http.services.xray_ssgrpc.loadbalancer.server.port: 3004
+      traefik.http.services.xray_ssgrpc.loadbalancer.server.scheme: h2c
