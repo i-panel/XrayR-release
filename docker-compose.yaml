@@ -97,7 +97,7 @@ services:
       traefik.http.routers.sspanel.entrypoints: web
       # traefik.http.services.sspanel.loadbalancer.server.port: 8080
     volumes:
-      - ./config/.config.php:/var/www/config/.config.php
+      - ./config/.config.example.php:/var/www/config/.config.php
     depends_on:
       mariadb:
         condition: service_healthy
