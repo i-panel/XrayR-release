@@ -172,7 +172,7 @@ services:
       
   xray_vmessws:
     image: ghcr.io/xrayr-project/xrayr:latest
-    container_name: xray_vlessws
+    container_name: xray_vmessws
     restart: unless-stopped
     depends_on:
       - TRAEFIK
