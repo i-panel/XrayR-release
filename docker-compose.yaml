@@ -80,9 +80,9 @@ services:
       traefik.http.routers.sspanel.entrypoints: web
       # traefik.http.services.sspanel.loadbalancer.server.port: 8080
     volumes:
-      - ./.config.example.php:/var/www/config/.config.php
+      - ./panel:/var/www/config
     depends_on:
-      mariadb:
+      MARIADB:
         condition: service_healthy
     environment:
       SSPANEL_KEY: ChangeMe
@@ -128,7 +128,7 @@ services:
     container_name: PHPMYADMIN
     restart: always
     depends_on:
-      mariadb:
+      MARIADB:
         condition: service_healthy
     environment:
       - PMA_ARBITRARY=1
@@ -181,8 +181,8 @@ services:
       NODE_ID: 41
       NODE_TYPE: V2ray # Node type: V2ray, Shadowsocks, Trojan, Shadowsocks-Plugin
       NODE_TIMEOUT: 30 # Timeout for the api request
-      ENABLE_VLESS: false # Enable Vless for V2ray Type
-      ENABLE_XTLS: true # Enable XTLS for V2ray and Trojan
+      ENABLE_VLESS: "false" # Enable Vless for V2ray Type
+      ENABLE_XTLS: "true" # Enable XTLS for V2ray and Trojan
       NODE_SPEED_LIMIT: 0 # Mbps, Local settings will replace remote settings, 0 means disable
       NODE_DEVICE_LIMIT: 0 # Local settings will replace remote settings, 0 means disable
       NODE_RULE_LIST_PATH: /etc/XrayR/rulelist #Path to local rulelist file
@@ -190,23 +190,23 @@ services:
       LISTEN_IP: 0.0.0.0 # IP address you want to listen
       SEND_IP: 0.0.0.0 # IP address you want to send pacakage
       UPDATE_PERIODIC: 60 # Time to update the nodeinfo, how many sec.
-      ENABLE_DNS: false # Use custom DNS config, Please ensure that you set the dns.json well
+      ENABLE_DNS: "false" # Use custom DNS config, Please ensure that you set the dns.json well
       DNS_TYPE: AsIs # AsIs, UseIP, UseIPv4, UseIPv6, DNS strategy
-      ENABLE_PROXY_PROTOCOL: false # Only works for WebSocket and TCP
+      ENABLE_PROXY_PROTOCOL: "false" # Only works for WebSocket and TCP
       ## AutoSpeedLimitConfig
       SPEED_LIMIT: 0 # Warned speed. Set to 0 to disable AutoSpeedLimit (mbps)
       SPEED_WARN_TIMES: 0 # After (WarnTimes) consecutive warnings, the user will be limited. Set to 0 to punish overspeed user immediately.
       SPEED_LIMIT_SPEED: 0 # The speedlimit of a limited user (unit: mbps)
       SPEED_LIMIT_DURATION: 0 # How many minutes will the limiting last (unit: minute)
       ## GlobalDeviceLimitConfig
-      RADIS_ENABLE: false # Enable the global device limit of a user
+      RADIS_ENABLE: "false" # Enable the global device limit of a user
       RADIS_ADDR: 127.0.0.1:6379 # The redis server address
       RADIS_PASSWORD: YOUR PASSWORD # Redis password
       RADIS_DB: 0 # Redis DB
       RADIS_TIME_OUT: 5 # Timeout for redis request
       RADIS_EXPIRY: 60 # Expiry time (second)
       ## FallBackConfigs:  # Support multiple fallbacks
-      FALLBACK_ENABLE: false # Only support for Trojan and Vless
+      FALLBACK_ENABLE: "false" # Only support for Trojan and Vless
       FALLBACK_SNI: # TLS SNI(Server Name Indication), Empty for any
       FALLBACK_ALPN: # Alpn, Empty for any
       FALLBACK_PATH: # HTTP PATH, Empty for any
